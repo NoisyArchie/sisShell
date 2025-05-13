@@ -36,7 +36,36 @@ class CustomShellUI:
         self.path_label = tk.Label(self.root, text=self.current_path, anchor="w")
         self.path_label.pack(fill=tk.X)
 
+        #Eventos de botón
+        self.command_entry.bind("<Return>", self.execute_command)
+        self.command_entry.bind("<Up>", self.show_previous_command)
+        self.command_entry.bind("<Down>", self.show_next_command)
+
+        #Historial de comandos
+        self.command_history = []
+        self.history_index = -1
+
+
     def execute_command(self, event=None):
         command = self.command_entry.get()
+        self.command_history.append(command)
+        self.history_index = len(self.command_history)
         self.shell.execute(command)
         self.command_entry.delete(0, tk.END)
+
+    def show_previous_command(self, event = None):
+        if self.command_history and self.history_index > 0:
+            self.history_index -= 1
+            self.command_entry.delete(0, tk.END)
+            self.command_entry.insert(0, self.command_history[self.history_index])
+        return "break"
+
+    def show_next_command(self, event = None):
+        if self.command_history and self.history_index < len(self.command_history) - 1:
+            self.history_index += 1
+            self.command_entry.delete(0, tk.END)
+            self.command_entry.insert(0, self.command_history[self.history_index])
+        else:
+            self.history_index = len(self.command_history)
+            self.command_entry.delete(0, tk.END)
+        return "break"
