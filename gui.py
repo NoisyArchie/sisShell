@@ -15,13 +15,24 @@ class CustomShellUI:
         self.shell = Shell(self)
         self.commands = Commands(self.shell)
 
-        #mostrar la terminal
+        #Mostrar la terminal
         self.output_frame = tk.Frame(self.root)
-        self.output_frame.pack(fill = tk.BOTH, expand = True)
+        self.output_frame.pack(fill=tk.BOTH, expand=True)
 
-        #Widget para mostrar los resultados de los comandos
-        self.text_output = tk.Text(self.output_frame, wrap = tk.WORD, height = 15)
-        self.text_output.pack(fill = tk.BOTH, expand = True)
+        #Frame interno que contiene el texto y el scrollbar
+        self.text_container = tk.Frame(self.output_frame)
+        self.text_container.pack(fill=tk.BOTH, expand=True)
+
+        # crollbar
+        scrollbar = tk.Scrollbar(self.text_container)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        #Widget de salida
+        self.text_output = tk.Text(self.text_container, wrap=tk.WORD, height=15, yscrollcommand=scrollbar.set)
+        self.text_output.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        scrollbar.config(command=self.text_output.yview)
+
 
         #Entrada de los comandos
         self.input_frame = tk.Frame(self.root)
@@ -47,10 +58,13 @@ class CustomShellUI:
 
 
     def execute_command(self, event=None):
+        self.text_output.config(state="normal")
         command = self.command_entry.get()
         self.command_history.append(command)
         self.history_index = len(self.command_history)
         self.shell.execute(command)
+        self.text_output.see("end")
+        self.text_output.config(state="disabled")
         self.command_entry.delete(0, tk.END)
 
     def show_previous_command(self, event = None):
