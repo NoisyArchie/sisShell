@@ -1,10 +1,9 @@
 """Este archivo contiene la clase que maneja los comandos del shell.
 se deben de ir agregando los metodos para cada comando que se implemente
-faltan: 
-usodisco, usodicodet, graficadico, gdd, exportar.
-Pendientes de revision: memdetallada, cpucores, pinglocal, salir, ayuda, recursos, top5"""
+faltan: usodicodet, graficadico, gdd, exportar.
+Pendientes de revision: memdetallada, cpucores, pinglocal, salir, ayuda, recursos, top5, usodisco"""
 import subprocess
-from utils import system_info, show_time, show_date, list_files, memdetallada, cpucores, pinglocal, salir, recursos, top5 #del archivo utils.py vamos agregando las nuevas funciones aki
+from utils import system_info, show_time, show_date, list_files, memdetallada, cpucores, pinglocal, salir, recursos, top5, ayuda, usodisco #del archivo utils.py vamos agregando las nuevas funciones aki
 
 class Commands:
     def __init__(self, shell):
@@ -19,8 +18,10 @@ class Commands:
             "cpucores": self.cpucores,
             "pinglocal": self.pinglocal,
             "salir": self.salir,
+            "ayuda": self.ayuda,
             "recursos": self.recursos,
             "top5": self.top5,
+            "usodisco": self.usodisco,
             #Aqui hay que agregar más comandos chabales
         }
 
@@ -100,6 +101,23 @@ class Commands:
                 self.shell.ui.text_output.insert("end", f"{key}: {value}\n")
         except Exception as e:
             self.shell.ui.text_output.insert("end", f"Error al obtener información de procesos: {e}\n")
+
+    def ayuda(self):
+        try:
+            info_ayuda = ayuda()
+            self.shell.ui.text_output.insert("end", "=== AYUDA -COMANDOS DISPONIBLES ===\n")
+            for key, value in info_ayuda.items():
+                self.shell.ui.text_output.insert("end", f"{key}: {value}\n")
+        except Exception as e:
+            self.shell.ui.text_output.insert("end", f"Error al obtener información de ayuda: {e}\n")
+
+    def usodisco(self):
+        try:
+            uso_disco = usodisco()
+            self.shell.ui.text_output.insert("end", "=== USO DEL DISCO ===\n")
+            self.shell.ui.text_output.insert("end", uso_disco + "\n")
+        except Exception as e:
+            self.shell.ui.text_output.insert("end", f"Error al obtener información del disco: {e}\n")
 
 #aqui continuamos con los métodos para los comandos porfo
 

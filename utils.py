@@ -1,8 +1,7 @@
 """Este modulo contiene las funciones para obtener la información correspondiente
 a cada comando. se deben de ir agregando las funciones para obtener la información
 para cada comando que se implemente.
-faltan: memdatallada, cpucores, pinglocal, salir, ayuda, recursos, top5,
-usodisco, usodicodet, graficadico, gdd, exportar."""
+faltan: usodisco, usodicodet, graficadico, gdd, exportar."""
 import os
 import platform
 import psutil
@@ -108,3 +107,42 @@ def top5():
         "Top 5 CPU": [{p['name']: f"{p['cpu_percent']}%"} for p in top_cpu],
         "Top 5 RAM": [{p['name']: f"{p['memory_percent']}%"} for p in top_mem]
     }
+
+def ayuda():
+    return {
+        "miinfo": "Muestra información básica del sistema.",
+        "limpiar": "Limpia la pantalla del shell.",
+        "hora": "Muestra la hora actual.",
+        "fecha": "Muestra la fecha actual.",
+        "listar": "Lista archivos del directorio actual.",
+        "memdetallada": "Muestra el uso detallado de la memoria.",
+        "cpucores": "Muestra uso del CPU por núcleo.",
+        "pinglocal": "Ejecuta ping a localhost.",
+        "salir": "Cierra el programa.",
+        "ayuda": "Muestra esta lista de comandos personalizados.",
+        "recursos": "Muestra uso actual de CPU y RAM.",
+        "top5": "Muestra los 5 procesos con más uso de CPU/RAM.",
+        "usodisco": "Muestra el uso de disco principal.",
+        "usodiscodet": "Muestra el uso de todas las particiones del disco.",
+        "graficadisco": "Muestra una gráfica circular del uso de disco.",
+        "gdd": "Muestra una gráfica detallada del uso por partición.",
+        "exportar <archivo.txt>": "Exporta la salida del shell a un archivo de texto."
+    }
+
+def usodisco():
+    disco_principal = "/"
+    if platform.system() == "Windows":
+        disco_principal = os.path.splitdrive(os.getcwd())[0] + "\\"
+    elif platform.system() == "Linux":
+        disco_principal = "/"
+
+    uso = psutil.disk_usage(disco_principal)
+    
+    resultado = (
+        f"Disco en: {disco_principal}\n"
+        f"Total: {round(uso.total / (1024**3), 2)} GB\n"
+        f"Usado: {round(uso.used / (1024**3), 2)} GB\n"
+        f"Libre: {round(uso.free / (1024**3), 2)} GB\n"
+        f"Porcentaje usado: {uso.percent}%\n"
+    )
+    return resultado
