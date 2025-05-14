@@ -1,9 +1,10 @@
 """Este archivo contiene la clase que maneja los comandos del shell.
 se deben de ir agregando los metodos para cada comando que se implemente
-faltan: memdatallada, cpucores, pinglocal, salir, ayuda, recursos, top5,
-usodisco, usodicodet, graficadico, gdd, exportar."""
+faltan: 
+usodisco, usodicodet, graficadico, gdd, exportar.
+Pendientes de revision: memdetallada, cpucores, pinglocal, salir, ayuda, recursos, top5"""
 import subprocess
-from utils import system_info, show_time, show_date, list_files #del archivo utils.py vamos agregando las nuevas funciones aki
+from utils import system_info, show_time, show_date, list_files, memdetallada, cpucores, pinglocal, salir, recursos, top5 #del archivo utils.py vamos agregando las nuevas funciones aki
 
 class Commands:
     def __init__(self, shell):
@@ -14,6 +15,12 @@ class Commands:
             "hora": self.show_time,
             "fecha": self.show_date,
             "listar": self.list_files,
+            "memdetallada": self.memdetallada,
+            "cpucores": self.cpucores,
+            "pinglocal": self.pinglocal,
+            "salir": self.salir,
+            "recursos": self.recursos,
+            "top5": self.top5,
             #Aqui hay que agregar más comandos chabales
         }
 
@@ -45,6 +52,54 @@ class Commands:
                 self.shell.ui.text_output.insert("end", f"{file}\n")
         except Exception as e:
             self.shell.ui.text_output.insert("end", f"Error al listar los archivos: {e}\n")
+
+    def memdetallada(self):
+        try:
+            mem = memdetallada()
+            self.shell.ui.text_output.insert("end", "=== MEMORIA DETALLADA ===\n")
+            for key, value in mem.items():
+                self.shell.ui.text_output.insert("end", f"{key}: {value}\n")
+        except Exception as e:
+            self.shell.ui.text_output.insert("end", f"Error al obtener información de memoria: {e}\n")
+
+    def cpucores(self):
+        try:
+            cores = cpucores()
+            self.shell.ui.text_output.insert("end", "=== USO DE CPU POR NÚCLEO ===\n")
+            for key, value in cores.items():
+                self.shell.ui.text_output.insert("end", f"{key}: {value}\n")
+        except Exception as e:
+            self.shell.ui.text_output.insert("end", f"Error al obtener información de CPU: {e}\n")
+
+    def pinglocal(self):
+        try:
+            output = pinglocal()
+            self.shell.ui.text_output.insert("end", "=== RESULTADO DEL PING A LOCALHOST ===\n")
+            self.shell.ui.text_output.insert("end", output)
+        except Exception as e:
+            self.shell.ui.text_output.insert("end", f"Error al realizar el ping: {e}\n")
+
+    def salir(self):
+        self.shell.ui.text_output.insert("end", "Saliendo del programa...\n")
+        salir()
+        
+    def recursos(self):
+        try:
+            recursos_info = recursos()
+            self.shell.ui.text_output.insert("end", "=== RECURSOS DEL SISTEMA ===\n")
+            for key, value in recursos_info.items():
+                self.shell.ui.text_output.insert("end", f"{key}: {value}\n")
+        except Exception as e:
+            self.shell.ui.text_output.insert("end", f"Error al obtener información de recursos: {e}\n")
+
+    def top5(self):
+        try:
+            top5_info = top5()
+            self.shell.ui.text_output.insert("end", "=== TOP 5 PROCESOS ===\n")
+            for key, value in top5_info.items():
+                self.shell.ui.text_output.insert("end", f"{key}: {value}\n")
+        except Exception as e:
+            self.shell.ui.text_output.insert("end", f"Error al obtener información de procesos: {e}\n")
 
 #aqui continuamos con los métodos para los comandos porfo
 
