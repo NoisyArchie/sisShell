@@ -1,13 +1,18 @@
 """Este modulo contiene las funciones para obtener la información correspondiente
 a cada comando. se deben de ir agregando las funciones para obtener la información
 para cada comando que se implemente.
-faltan: usodisco, usodicodet, graficadico, gdd, exportar."""
+faltan: Los comandos extras naturales sin personalizar - Contemplar y garantizar al menos
+10 comandos externos reales (naturales del SO) que operen dentro del Shell, es decir, que
+no estén en la lista de comandos extendidos personalizados
+(dir, ping, ipconfig, tasklist, calc, notepad, ls etc.).
+."""
 import os
 import platform
 import psutil
 import datetime
 import subprocess
 import sys
+import matplotlib.pyplot as plt
 
 def get_current_path():
     return os.getcwd()
@@ -108,6 +113,7 @@ def top5():
         "Top 5 RAM": [{p['name']: f"{p['memory_percent']}%"} for p in top_mem]
     }
 
+#aiuda
 def ayuda():
     return {
         "miinfo": "Muestra información básica del sistema.",
@@ -129,6 +135,7 @@ def ayuda():
         "exportar <archivo.txt>": "Exporta la salida del shell a un archivo de texto."
     }
 
+#usodeldisco
 def usodisco():
     disco_principal = "/"
     if platform.system() == "Windows":
@@ -146,3 +153,79 @@ def usodisco():
         f"Porcentaje usado: {uso.percent}%\n"
     )
     return resultado
+
+#uso de cada partición del disco (si existe)
+def usodiscodet():
+    particiones = psutil.disk_partitions()
+    resultados = []
+
+    for particion in particiones:
+        try:
+            uso = psutil.disk_usage(particion.mountpoint)
+            resultados.append(
+                f"Partición: {particion.device}\n"
+                f"  Punto de montaje: {particion.mountpoint}\n"
+                f"  Tipo de sistema de archivos: {particion.fstype}\n"
+                f"  Total: {round(uso.total / (1024**3), 2)} GB\n"
+                f"  Usado: {round(uso.used / (1024**3), 2)} GB\n"
+                f"  Libre: {round(uso.free / (1024**3), 2)} GB\n"
+                f"  Porcentaje usado: {uso.percent}%\n"
+                "----------------------------------------\n"
+            )
+        except PermissionError:
+            resultados.append(
+                f"Partición: {particion.device} \n ACCESO DENEGADO.\n"
+                "----------------------------------------\n"
+            )
+        return "".join(resultados)
+    
+def graficadisco():
+    if platform.system == "windows":
+        disco = os.path.splitdrive(os.getcwd())[0] + "\\"
+    else:
+        disco = "/"
+
+    uso = psutil.disk_usage(disco)
+
+    labels = ['Usado', 'Libre']
+    values = [uso.used, uso.free]
+    colores = ["#ff4040", "#0ead00"]
+
+    plt.figure(figsize = (6, 6))
+    plt.pie(values, labels = labels, colors = colores, autopct = '%1.1f%%', startangle = 140)
+    plt.title(f'Uso del Disco.')
+    plt.axis('equal')
+    plt.show()
+
+def gdd():
+    particiones = psutil.disk_partitions(all = False)
+    labels = []
+    porcentajes = []
+    errores = []
+
+    for p in particiones:
+        try:
+            uso = psutil.disk_usage(p.mountpoint)
+            labels.append(p.device)
+            porcentajes.append(uso.used)
+        except Exception as e:
+            errores.append(f"No se pudo acceder a {p.device}: {e}")
+
+    if not labels:
+        raise Exception("No se pudo obtener información de las particiones.")
+
+    plt.figure(figsize=(7, 7))
+    plt.pie(porcentajes, labels = labels, autopct = '%1.1f%%', startangle = 140)
+    plt.title("Uso de Disco por Partición")
+    plt.axis('equal')
+    plt.show()
+
+    return errores
+
+def exportar_salida(contenido, nombre):
+    try:
+        with open(nombre, "w", encoding = "utf-8") as archivo:
+            archivo.write(contenido)
+        return f"Salida exportada correctamente en '{nombre}'"
+    except Exception as e:
+        return f"Error al exportar el archivo {e}"

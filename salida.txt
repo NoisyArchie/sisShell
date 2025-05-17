@@ -1,0 +1,84 @@
+=== INFORMACIÓN DEL SISTEMA ===
+Sistema: Windows
+Nombre del sistema: DESKTOP-GUSCO
+Versión del sistema: 10.0.22621
+Arquitectura: 64bit
+Procesador: Intel64 Family 6 Model 142 Stepping 9, GenuineIntel
+Memoria Ram:: 7.90 GB
+CPU: 13.6% uso
+Hora actual: 21:15:00
+Fecha actual: 16/05/2025
+=== LISTA DE ARCHIVOS DEL DIRECTORIO ===
+.git
+commands.py
+gui.py
+main.py
+shell.py
+utils.py
+__pycache__
+=== MEMORIA DETALLADA ===
+RAM: {'Total': '7.90 GB', 'Disponible': '0.87 GB', 'Usada': '7.03 GB', 'Porcentaje': '89.0%'}
+Swap: {'Total': '4.75 GB', 'Usado': '0.88 GB', 'Porcentaje': '18.6%'}
+=== USO DE CPU POR NÚCLEO ===
+Núcleo 1: 13.6%
+Núcleo 2: 5.8%
+Núcleo 3: 9.5%
+Núcleo 4: 15.4%
+=== RESULTADO DEL PING A LOCALHOST ===
+
+Haciendo ping a 127.0.0.1 con 32 bytes de datos:
+Respuesta desde 127.0.0.1: bytes=32 tiempo<1m TTL=128
+Respuesta desde 127.0.0.1: bytes=32 tiempo<1m TTL=128
+Respuesta desde 127.0.0.1: bytes=32 tiempo<1m TTL=128
+Respuesta desde 127.0.0.1: bytes=32 tiempo<1m TTL=128
+
+Estad¡sticas de ping para 127.0.0.1:
+    Paquetes: enviados = 4, recibidos = 4, perdidos = 0
+    (0% perdidos),
+Tiempos aproximados de ida y vuelta en milisegundos:
+    M¡nimo = 0ms, M ximo = 0ms, Media = 0ms
+=== AYUDA -COMANDOS DISPONIBLES ===
+miinfo: Muestra información básica del sistema.
+limpiar: Limpia la pantalla del shell.
+hora: Muestra la hora actual.
+fecha: Muestra la fecha actual.
+listar: Lista archivos del directorio actual.
+memdetallada: Muestra el uso detallado de la memoria.
+cpucores: Muestra uso del CPU por núcleo.
+pinglocal: Ejecuta ping a localhost.
+salir: Cierra el programa.
+ayuda: Muestra esta lista de comandos personalizados.
+recursos: Muestra uso actual de CPU y RAM.
+top5: Muestra los 5 procesos con más uso de CPU/RAM.
+usodisco: Muestra el uso de disco principal.
+usodiscodet: Muestra el uso de todas las particiones del disco.
+graficadisco: Muestra una gráfica circular del uso de disco.
+gdd: Muestra una gráfica detallada del uso por partición.
+exportar <archivo.txt>: Exporta la salida del shell a un archivo de texto.
+=== RECURSOS DEL SISTEMA ===
+CPU: 10.6%
+RAM: 88.7%
+Núcleos físicos: 2
+Núcleos lógicos: 4
+=== TOP 5 PROCESOS ===
+Top 5 CPU: [{'System Idle Process': '354.5%'}, {'sqlservr.exe': '26.7%'}, {'python.exe': '3.8%'}, {'System': '2.8%'}, {'Code.exe': '1.8%'}]
+Top 5 RAM: [{'dwm.exe': '7.438400990622193%'}, {'Code.exe': '5.646807091673572%'}, {'Code.exe': '4.592002926311857%'}, {'Code.exe': '4.23021928518656%'}, {'chrome.exe': '2.8087092522896797%'}]
+=== USO DEL DISCO ===
+Disco en: C:\
+Total: 893.43 GB
+Usado: 136.0 GB
+Libre: 757.43 GB
+Porcentaje usado: 15.2%
+
+=== DETALLES DE TODAS LAS PARTICIONES DEL DISCO ===
+Partición: C:\
+  Punto de montaje: C:\
+  Tipo de sistema de archivos: NTFS
+  Total: 893.43 GB
+  Usado: 136.0 GB
+  Libre: 757.43 GB
+  Porcentaje usado: 15.2%
+----------------------------------------
+
+Generando gráfica del uso del disco...
+Generando gráfica detallada del disco...

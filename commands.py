@@ -1,9 +1,13 @@
 """Este archivo contiene la clase que maneja los comandos del shell.
 se deben de ir agregando los metodos para cada comando que se implemente
-faltan: usodicodet, graficadico, gdd, exportar.
-Pendientes de revision: memdetallada, cpucores, pinglocal, salir, ayuda, recursos, top5, usodisco"""
+Pendientes de revision: memdetallada, cpucores, pinglocal, salir, ayuda, recursos, top5, usodisco, usodicodet, graficadico, gdd, exportar
+
+faltan: Los comandos extras naturales sin personalizar - Contemplar y garantizar al menos
+10 comandos externos reales (naturales del SO) que operen dentro del Shell, es decir, que
+no estén en la lista de comandos extendidos personalizados
+(dir, ping, ipconfig, tasklist, calc, notepad, ls etc.)."""
 import subprocess
-from utils import system_info, show_time, show_date, list_files, memdetallada, cpucores, pinglocal, salir, recursos, top5, ayuda, usodisco #del archivo utils.py vamos agregando las nuevas funciones aki
+from utils import system_info, show_time, show_date, list_files, memdetallada, cpucores, pinglocal, salir, recursos, top5, ayuda, usodisco, usodiscodet, graficadisco, gdd, exportar_salida #del archivo utils.py vamos agregando las nuevas funciones aki
 
 class Commands:
     def __init__(self, shell):
@@ -22,6 +26,10 @@ class Commands:
             "recursos": self.recursos,
             "top5": self.top5,
             "usodisco": self.usodisco,
+            "usodiscodet": self.usodiscodet,
+            "graficadisco": self.graficadisco,
+            "gdd": self.gdd,
+            "exportar": self.exportar,
             #Aqui hay que agregar más comandos chabales
         }
 
@@ -119,11 +127,51 @@ class Commands:
         except Exception as e:
             self.shell.ui.text_output.insert("end", f"Error al obtener información del disco: {e}\n")
 
+    def usodiscodet(self):
+        try:
+            detalles_disco = usodiscodet()
+            self.shell.ui.text_output.insert("end", "=== DETALLES DE TODAS LAS PARTICIONES DEL DISCO ===\n")
+            self.shell.ui.text_output.insert("end", detalles_disco + "\n")
+        except Exception as e:
+            self.shell.ui.text_output.insert("end", f"Error al obtener información del disco: {e}\n")
+
+    def graficadisco(self):
+        try:
+            self.shell.ui.text_output.insert("end", "Generando gráfica del uso del disco...\n")
+            graficadisco()
+        except Exception as e:
+            self.shell.ui.text_output.insert("end", f"Error al obtener graficar disco disco: {e}\n")
+
+    def gdd(self):
+        try:
+            self.shell.ui.text_output.insert("end", "Generando gráfica detallada del disco...\n")
+            errores = gdd()
+            if errores:
+                for error in errores:
+                    self.shell.ui.text_output.insert("end", f"{error}\n")
+        except Exception as e:
+            self.shell.ui.text_output.insert("end", f"Error al generar la gráfica detallada: {e}\n")
+
+    def exportar(self, nombre = None):
+        try:
+            if not nombre:
+                self.shell.ui.text_output.insert("end", "Debes insertar un nombre para el archivo.\n")
+                return
+            
+            if not nombre.lower().endswith(".txt"):
+                nombre += ".txt"
+            
+            contenido = self.shell.ui.text_output.get("1.0", "end-1c")
+            mensaje = exportar_salida(contenido, nombre)
+            self.shell.ui.text_output.insert("end", f"{mensaje}\n")
+        except Exception as e:
+            self.shell.ui.text_output.insert("end", f"Error al exportar: {e}\n")
+
 #aqui continuamos con los métodos para los comandos porfo
 
     def execute_external_command(self, command):
         try:
             result = subprocess.run(command, shell = True, capture_output = True)
-            self.shell.ui.text_output.insert("1.0", result.stdout)
+            self.shell.ui.text_output.insert("end", result.stdout)
         except Exception as e:
             self.shell.ui.text_output.insert("1.0", f"Error al ejecutar el comando: {e}\n")
