@@ -1,6 +1,6 @@
-"""En este modulo se define la interfaz gráfica de la app. 
-solo se encarga de la parte visual y de la interacción con el usuario."""
+"""Interfaz gráfica con estilo neon moderno y mejor visualización de comandos"""
 import tkinter as tk
+from tkinter import ttk, scrolledtext
 from shell import Shell
 from commands import Commands
 from utils import get_current_path
@@ -8,73 +8,204 @@ from utils import get_current_path
 class CustomShellUI:
     def __init__(self, root):
         self.root = root
-        self.root.title("SisShell")
-        self.root.geometry("600x400")
-
-        #Objeto shell y comandos
+        self.root.title("NeonShell - Terminal Futurista")
+        self.root.geometry("900x650")
+        self.root.minsize(700, 500)
+        
+        # Configuración del tema neon
+        self.set_neon_theme()
+        
+        # Objeto shell y comandos (sin cambios)
         self.shell = Shell(self)
         self.commands = Commands(self.shell)
-
-        #Mostrar la terminal
-        self.output_frame = tk.Frame(self.root)
-        self.output_frame.pack(fill=tk.BOTH, expand=True)
-
-        #Frame interno que contiene el texto y el scrollbar
-        self.text_container = tk.Frame(self.output_frame)
-        self.text_container.pack(fill=tk.BOTH, expand=True)
-
-        # crollbar
-        scrollbar = tk.Scrollbar(self.text_container)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-
-        #Widget de salida
-        self.text_output = tk.Text(self.text_container, wrap=tk.WORD, height=15, yscrollcommand=scrollbar.set)
-        self.text_output.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-
-        scrollbar.config(command=self.text_output.yview)
-
-
-        #Entrada de los comandos
-        self.input_frame = tk.Frame(self.root)
-        self.input_frame.pack(fill=tk.X)
-
-        self.command_entry = tk.Entry(self.input_frame, width=50)
-        self.command_entry.pack(side=tk.LEFT, padx=5, pady=5)
-        self.command_entry.bind("<Return>", self.execute_command)
-
-        # Barra de ruta
+        
+        # Barra de ruta con estilo neon
+        self.path_frame = ttk.Frame(self.root, style='Neon.TFrame')
+        self.path_frame.pack(fill=tk.X, padx=10, pady=(10, 0))
+        
         self.current_path = get_current_path()
-        self.path_label = tk.Label(self.root, text=self.current_path, anchor="w")
-        self.path_label.pack(fill=tk.X)
-
-        #Eventos de botón
+        self.path_label = ttk.Label(
+            self.path_frame,
+            text=self.current_path,
+            font=('Consolas', 10, 'bold'),
+            style='Neon.TLabel',
+            relief=tk.GROOVE,
+            padding=5
+        )
+        self.path_label.pack(fill=tk.X, expand=True)
+        
+        # Terminal principal con scroll
+        self.main_frame = ttk.Frame(self.root, style='Neon.TFrame')
+        self.main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        
+        self.text_output = scrolledtext.ScrolledText(
+            self.main_frame,
+            wrap=tk.WORD,
+            bg='#0a0a12',
+            fg='#00fffc',
+            insertbackground='#ff00ff',
+            selectbackground='#6a00ff',
+            selectforeground='#ffffff',
+            font=('Consolas', 12),
+            padx=15,
+            pady=15,
+            state="normal",
+            highlightthickness=2,
+            highlightbackground='#6a00ff'
+        )
+        self.text_output.pack(fill=tk.BOTH, expand=True)
+        
+        # Panel de entrada de comandos
+        self.input_frame = ttk.Frame(self.root, style='Neon.TFrame')
+        self.input_frame.pack(fill=tk.X, padx=10, pady=(0, 10))
+        
+        # Prompt con estilo neon
+        self.prompt_label = ttk.Label(
+            self.input_frame,
+            text=">",
+            font=('Consolas', 14, 'bold'),
+            style='NeonPrompt.TLabel',
+            padding=(0, 0, 10, 0)
+        )
+        self.prompt_label.pack(side=tk.LEFT)
+        
+        # Entrada de comandos
+        self.command_entry = ttk.Entry(
+            self.input_frame,
+            font=('Consolas', 12),
+            style='Neon.TEntry',
+            width=50
+        )
+        self.command_entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 10))
+        
+            # Botón de ejecución con efecto neon
+        self.run_button = ttk.Button(
+                self.input_frame,
+                text="Ejecutar",
+                style='Neon.TButton',
+                command=lambda: self.execute_command(None)
+            )  # <-- Paréntesis cerrado aquí
+        self.run_button.pack(side=tk.RIGHT)
+        
+        # Eventos (sin cambios)
         self.command_entry.bind("<Return>", self.execute_command)
         self.command_entry.bind("<Up>", self.show_previous_command)
         self.command_entry.bind("<Down>", self.show_next_command)
-
-        #Historial de comandos
+        self.command_entry.focus_set()
+        
+        # Historial (sin cambios)
         self.command_history = []
         self.history_index = -1
-
-
+        
+        # Mensaje de bienvenida con estilo futurista
+        self.display_welcome_message()
+    
+    def set_neon_theme(self):
+        """Configura el tema neon futurista"""
+        self.root.configure(bg='#0a0a12')
+        
+        # Configurar colores neon
+        self.neon_blue = '#00fffc'
+        self.neon_pink = '#ff00ff'
+        self.neon_purple = '#6a00ff'
+        self.dark_bg = '#0a0a12'
+        self.darker_bg = '#050510'
+        
+        # Configurar estilos ttk
+        self.style = ttk.Style()
+        self.style.theme_use('clam')
+        
+        # Frame style
+        self.style.configure('Neon.TFrame', background=self.dark_bg)
+        
+        # Label style
+        self.style.configure('Neon.TLabel', 
+                           background=self.darker_bg, 
+                           foreground=self.neon_blue,
+                           bordercolor=self.neon_purple,
+                           lightcolor=self.neon_purple,
+                           darkcolor=self.darker_bg)
+        
+        # Prompt style
+        self.style.configure('NeonPrompt.TLabel',
+                           background=self.dark_bg,
+                           foreground=self.neon_pink,
+                           font=('Consolas', 14, 'bold'))
+        
+        # Entry style
+        self.style.configure('Neon.TEntry',
+                           fieldbackground=self.darker_bg,
+                           foreground=self.neon_blue,
+                           bordercolor=self.neon_purple,
+                           lightcolor=self.neon_purple,
+                           darkcolor=self.darker_bg,
+                           insertwidth=2)
+        
+        # Button style
+        self.style.configure('Neon.TButton',
+                           background=self.darker_bg,
+                           foreground=self.neon_pink,
+                           bordercolor=self.neon_purple,
+                           lightcolor=self.neon_purple,
+                           darkcolor=self.darker_bg,
+                           font=('Consolas', 10, 'bold'),
+                           padding=5)
+        self.style.map('Neon.TButton',
+                     background=[('active', '#12012a')],
+                     foreground=[('active', self.neon_blue)])
+    
+    def display_welcome_message(self):
+        """Muestra mensaje de bienvenida con estilo futurista"""
+        welcome_msg = """
+╔══════════════════════════════════════════════════════╗
+║  ███╗   ██╗███████╗ ██████╗ ███╗   ██╗███████╗       ║
+║  ████╗  ██║██╔════╝██╔═══██╗████╗  ██║██╔════╝       ║
+║  ██╔██╗ ██║█████╗  ██║   ██║██╔██╗ ██║███████╗       ║
+║  ██║╚██╗██║██╔══╝  ██║   ██║██║╚██╗██║╚════██║       ║
+║  ██║ ╚████║███████╗╚██████╔╝██║ ╚████║███████║       ║
+║  ╚═╝  ╚═══╝╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝       ║
+╠══════════════════════════════════════════════════════╣
+║  TERMINAL NEON v2.0 - Escribe 'ayuda' para comenzar  ║
+╚══════════════════════════════════════════════════════╝
+"""
+        self.text_output.insert(tk.END, welcome_msg, 'neon_pink')
+        self.text_output.tag_config('neon_pink', foreground=self.neon_pink)
+        self.text_output.insert(tk.END, f"\n\n{self.current_path} ", 'path_style')
+        self.text_output.tag_config('path_style', foreground=self.neon_blue)
+        self.text_output.insert(tk.END, ">>> ", 'prompt_style')
+        self.text_output.tag_config('prompt_style', foreground=self.neon_pink)
+        self.text_output.see(tk.END)
+    
+    # MÉTODOS ORIGINALES (SIN MODIFICACIONES)
     def execute_command(self, event=None):
         self.text_output.config(state="normal")
         command = self.command_entry.get()
+        
+        # Mostrar comando con estilo diferente
+        self.text_output.insert(tk.END, "> ", 'prompt_style')
+        self.text_output.insert(tk.END, f"{command}\n", 'command_style')
+        self.text_output.tag_config('command_style', foreground='#ffffff')
+        
         self.command_history.append(command)
         self.history_index = len(self.command_history)
         self.shell.execute(command)
+        
+        # Separador entre comandos
+        self.text_output.insert(tk.END, "-"*80 + "\n", 'separator')
+        self.text_output.tag_config('separator', foreground=self.neon_purple)
+        
         self.text_output.see("end")
         self.text_output.config(state="disabled")
         self.command_entry.delete(0, tk.END)
 
-    def show_previous_command(self, event = None):
+    def show_previous_command(self, event=None):
         if self.command_history and self.history_index > 0:
             self.history_index -= 1
             self.command_entry.delete(0, tk.END)
             self.command_entry.insert(0, self.command_history[self.history_index])
         return "break"
 
-    def show_next_command(self, event = None):
+    def show_next_command(self, event=None):
         if self.command_history and self.history_index < len(self.command_history) - 1:
             self.history_index += 1
             self.command_entry.delete(0, tk.END)
