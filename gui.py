@@ -1,6 +1,6 @@
 """Interfaz gráfica con estilo neon moderno y mejor visualización de comandos"""
 import tkinter as tk
-from tkinter import ttk, scrolledtext
+from tkinter import ttk, scrolledtext, filedialog
 from shell import Shell
 from commands import Commands
 from utils import get_current_path
@@ -77,8 +77,17 @@ class CustomShellUI:
             width=50
         )
         self.command_entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 10))
-        
-            # Botón de ejecución con efecto neon
+
+        #Botón para exportar la salida a un archivo.
+        self.export_button = ttk.Button(
+            self.input_frame,
+            text = "Exportar",
+            style = 'Neon.TButton',
+            command=lambda: self.export_output()
+        )
+        self.export_button.pack(side=tk.RIGHT)
+
+        # Botón de ejecución con efecto neon
         self.run_button = ttk.Button(
                 self.input_frame,
                 text="Ejecutar",
@@ -86,7 +95,7 @@ class CustomShellUI:
                 command=lambda: self.execute_command(None)
             )  # <-- Paréntesis cerrado aquí
         self.run_button.pack(side=tk.RIGHT)
-        
+
         # Eventos (sin cambios)
         self.command_entry.bind("<Return>", self.execute_command)
         self.command_entry.bind("<Up>", self.show_previous_command)
@@ -219,3 +228,21 @@ class CustomShellUI:
             self.history_index = len(self.command_history)
             self.command_entry.delete(0, tk.END)
         return "break"
+
+    def export_output(self):
+        content = self.text_output.get("1.0", tk.END)
+    
+        file_path = tk.filedialog.asksaveasfilename(
+            defaultextension=".txt",
+            filetypes=[("Archivos de texto", "*.txt"), ("Todos los archivos", "*.*")],
+            title="Exportar salida"
+        )
+        
+        if file_path:  # Si el usuario no cancela
+            try:
+                with open(file_path, "w", encoding="utf-8") as file:
+                    file.write(content)
+                self.text_output.insert(tk.END, f"\nSalida exportada a: {file_path}\n", 'success')
+            except Exception as e:
+                self.text_output.insert(tk.END, f"\nError al exportar: {str(e)}\n", 'error')
+        self.text_output.see(tk.END)
