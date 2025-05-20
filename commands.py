@@ -7,7 +7,7 @@ faltan: Los comandos extras naturales sin personalizar - Contemplar y garantizar
 no estén en la lista de comandos extendidos personalizados
 (dir, ping, ipconfig, tasklist, calc, notepad, ls etc.)."""
 import subprocess
-from utils import system_info, show_time, show_date, list_files, memdetallada, cpucores, pinglocal, salir, recursos, top5, ayuda, usodisco, usodiscodet, graficadisco, gdd, exportar_salida #del archivo utils.py vamos agregando las nuevas funciones aki
+from utils import system_info, show_time, show_date, list_files, memdetallada, cpucores, pinglocal, salir, recursos, top5, ayuda, usodisco, usodiscodet, graficadisco, gdd, exportar_salida, mover_dir #del archivo utils.py vamos agregando las nuevas funciones aki
 
 class Commands:
     def __init__(self, shell):
@@ -30,6 +30,7 @@ class Commands:
             "graficadisco": self.graficadisco,
             "gdd": self.gdd,
             "exportar": self.exportar,
+            "mover": self.mover,
             #Aqui hay que agregar más comandos chabales
         }
 
@@ -44,6 +45,7 @@ class Commands:
 
     def clear_output(self):
         self.shell.ui.text_output.delete("1.0", "end")
+        self.shell.ui.display_welcome_message()
 
     def show_time(self):
         current_time = show_time()
@@ -166,6 +168,12 @@ class Commands:
             self.shell.ui.text_output.insert("end", f"{mensaje}\n")
         except Exception as e:
             self.shell.ui.text_output.insert("end", f"Error al exportar: {e}\n")
+
+    def mover(self, ruta):
+        result = mover_dir(ruta)
+        self.shell.ui.update_path_label()
+        self.shell.ui.text_output.insert("end", result)
+        
 
 #aqui continuamos con los métodos para los comandos porfo
 

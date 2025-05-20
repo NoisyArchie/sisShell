@@ -229,3 +229,10 @@ def exportar_salida(contenido, nombre):
         return f"Salida exportada correctamente en '{nombre}'"
     except Exception as e:
         return f"Error al exportar el archivo {e}"
+    
+def mover_dir(ruta):
+    if os.path.isdir(ruta):
+        os.chdir(ruta)
+        return f"Movido a {ruta}"
+    else:
+        return f"No se pudo mover a {ruta} o el directorio no existe..."

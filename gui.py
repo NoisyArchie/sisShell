@@ -175,6 +175,11 @@ class CustomShellUI:
         self.text_output.insert(tk.END, ">>> ", 'prompt_style')
         self.text_output.tag_config('prompt_style', foreground=self.neon_pink)
         self.text_output.see(tk.END)
+
+    #Actualizar laber de la ruta actual.
+    def update_path_label(self):
+        self.current_path = get_current_path()
+        self.path_label.config(text=self.current_path)
     
     # MÉTODOS ORIGINALES (SIN MODIFICACIONES)
     def execute_command(self, event=None):
