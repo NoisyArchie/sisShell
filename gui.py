@@ -174,7 +174,7 @@ class CustomShellUI:
 ║  ██║ ╚████║███████╗╚██████╔╝██║ ╚████║███████║       ║
 ║  ╚═╝  ╚═══╝╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝       ║
 ╠══════════════════════════════════════════════════════╣
-║  TERMINAL NEON v2.0 - Escribe 'ayuda' para comenzar  ║
+║  TERMINAL NEON v1.0 - Escribe 'ayuda' para comenzar  ║
 ╚══════════════════════════════════════════════════════╝
 """
         self.text_output.insert(tk.END, welcome_msg, 'neon_pink')

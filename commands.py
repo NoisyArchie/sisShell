@@ -7,7 +7,7 @@ faltan: Los comandos extras naturales sin personalizar - Contemplar y garantizar
 no estén en la lista de comandos extendidos personalizados
 (dir, ping, ipconfig, tasklist, calc, notepad, ls etc.)."""
 import subprocess
-from utils import system_info, show_time, show_date, list_files, memdetallada, cpucores, pinglocal, salir, recursos, top5, ayuda, usodisco, usodiscodet, graficadisco, gdd, exportar_salida, mover_dir #del archivo utils.py vamos agregando las nuevas funciones aki
+from utils import system_info, show_time, show_date, list_files, memdetallada, cpucores, pinglocal, salir, recursos, top5, ayuda, usodisco, usodiscodet, graficadisco, gdd, exportar_salida, mover_dir, regresar #del archivo utils.py vamos agregando las nuevas funciones aki
 
 class Commands:
     def __init__(self, shell):
@@ -31,6 +31,7 @@ class Commands:
             "gdd": self.gdd,
             "exportar": self.exportar,
             "mover": self.mover,
+            "regresar": self.regresar,
             #Aqui hay que agregar más comandos chabales
         }
 
@@ -173,7 +174,11 @@ class Commands:
         result = mover_dir(ruta)
         self.shell.ui.update_path_label()
         self.shell.ui.text_output.insert("end", result)
-        
+
+    def regresar(self):
+        result = regresar()
+        self.shell.ui.update_path_label()
+        self.shell.ui.text_output.insert("end", result)
 
 #aqui continuamos con los métodos para los comandos porfo
 

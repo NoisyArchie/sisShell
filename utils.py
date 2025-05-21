@@ -132,7 +132,20 @@ def ayuda():
         "usodiscodet": "Muestra el uso de todas las particiones del disco.",
         "graficadisco": "Muestra una gráfica circular del uso de disco.",
         "gdd": "Muestra una gráfica detallada del uso por partición.",
-        "exportar <archivo.txt>": "Exporta la salida del shell a un archivo de texto."
+        "exportar <archivo.txt>": "Exporta la salida del shell a un archivo de texto.",
+        "mover <nombre_carpeta>": "Mueve hacia un directorio dentro de la ruta.",
+        "regresar": "regresa a un hacia un directorio anterior.",
+        ":== COMANDOS NATIVOS ==": "",
+        "ipconfig": "Muestra las direcciones del protocolo de Internet, máscara de subred y puerta de enlace predeterminada.",
+        "mkdir <nombre>": "Crea un directorio.",
+        "rmdir <nombre>": "Elimina un directorio",
+        "tree": "Muestra la estructura de directorios de una ruta",
+        "vol": "Muestra la etiqueta del volumen y el número de serie del disco.",
+        "tasklist": "Muestra todas las tareas en ejecución, incluidos los servicios.",
+        "type <nombre_archivo>": "Muestra el contenido de una rchivo de texto.",
+        "ver": "Muestra la versión de Windows.",
+        "gpresult": "Muestra información de directiva de grupo por equipo o usuario.",
+        "driverquery": "Muestra el estado y las propiedades actuales del controlador de dispositivo."
     }
 
 #usodeldisco
@@ -229,10 +242,23 @@ def exportar_salida(contenido, nombre):
         return f"Salida exportada correctamente en '{nombre}'"
     except Exception as e:
         return f"Error al exportar el archivo {e}"
-    
+
+historial_rutas = []
 def mover_dir(ruta):
     if os.path.isdir(ruta):
+        historial_rutas.append(os.getcwd())
         os.chdir(ruta)
-        return f"Movido a {ruta}"
+        return f"Movido a {os.getcwd()}"
     else:
         return f"No se pudo mover a {ruta} o el directorio no existe..."
+
+def regresar():
+    if not historial_rutas:
+        return "No hay carpeta anterior a la que regresar."
+    
+    ruta_anterior = historial_rutas.pop()
+    try:
+        os.chdir(ruta_anterior)
+        return(f"Regresado a: {os.getcwd()}")
+    except Exception as e:
+        return(f"Error al regresar: {e}")
