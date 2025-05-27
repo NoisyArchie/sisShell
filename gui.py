@@ -1,9 +1,13 @@
-"""Interfaz gráfica con estilo neon moderno y mejor visualización de comandos"""
+##Archivo de interfaz grafica en donde se le da estilo a los frames del programa
 import tkinter as tk
 from tkinter import ttk, scrolledtext, filedialog
 from shell import Shell
 from commands import Commands
 from utils import get_current_path
+import psutil
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+import matplotlib.patheffects as patheffects
 
 class CustomShellUI:
     def __init__(self, root):
@@ -11,8 +15,11 @@ class CustomShellUI:
         self.root.title("SisShell")
         self.root.geometry("900x650")
         self.root.minsize(700, 500)
+        self.create_system_stats()  
+        self.create_resource_graphs()  
+        self.update_metrics()  
         
-        # Configuración del tema neon
+        # Configuración del tema 
         self.set_neon_theme()
         
         # Objeto shell y comandos
@@ -108,12 +115,100 @@ class CustomShellUI:
         
         # Mensaje de bienvenida
         self.display_welcome_message()
+        
+    def create_system_stats(self):
+        """Sección de estadísticas en tiempo real debajo de la entrada"""
+        self.stats_frame = ttk.Frame(self.root, style='Neon.TFrame')
+        self.stats_frame.pack(side=tk.TOP, fill=tk.X, padx=10, pady=(0, 5))
+    
+        # Variables dinámicas
+        self.cpu_var = tk.StringVar(value="🖥 CPU: 0.0%")
+        self.ram_var = tk.StringVar(value="💾 RAM: 0.0%")
+        self.disk_var = tk.StringVar(value="💿 DISK: 0.0%")
+    
+        # Estilo común
+        stat_style = {
+            'style': 'Neon.TLabel',
+            'font': ('Consolas', 10, 'bold'),
+            'padding': (15, 8),
+            'anchor': tk.CENTER
+        }
+    
+        # Etiquetas para estadisticas
+        ttk.Label(self.stats_frame, textvariable=self.cpu_var, 
+                 foreground='#00fffc', **stat_style).pack(side=tk.LEFT, expand=True)
+    
+        ttk.Label(self.stats_frame, textvariable=self.ram_var,
+                 foreground='#ff00ff', **stat_style).pack(side=tk.LEFT, expand=True)
+    
+        ttk.Label(self.stats_frame, textvariable=self.disk_var,
+                 foreground='#6a00ff', **stat_style).pack(side=tk.LEFT, expand=True)
+
+    def create_resource_graphs(self):
+        """Gráficos circulares para recursos del sistema"""
+        self.graph_frame = ttk.Frame(self.root, style='Graph.TFrame')
+        self.graph_frame.pack(side=tk.LEFT, fill=tk.BOTH, padx=10, pady=10, expand=True)
+    
+        # Configuración del frae de las estadfisticas
+        self.graph_style = {
+            'figsize': (1.75, 1.25),
+            'facecolor': '#0a0a12',
+            'edgecolor': '#6a00ff',
+            'dpi': 90
+        }
+    
+        # Creacion de graficos
+        self.cpu_fig = Figure(**self.graph_style)
+        self.cpu_ax = self.cpu_fig.add_subplot(111)
+        self.cpu_canvas = FigureCanvasTkAgg(self.cpu_fig, self.graph_frame)
+        self.cpu_canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+    
+        self.ram_fig = Figure(**self.graph_style)
+        self.ram_ax = self.ram_fig.add_subplot(111)
+        self.ram_canvas = FigureCanvasTkAgg(self.ram_fig, self.graph_frame)
+        self.ram_canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+
+    def update_resource_graph(self, ax, value, color):
+        """Actualiza los gráficos circulares"""
+        ax.clear()
+        ax.pie([value, 100-value], 
+              colors=[color, '#1a1a2f'],
+              startangle=90,
+              wedgeprops={'linewidth': 1.5, 'edgecolor': '#6a00ff'})
+        ax.text(0, 0, f"{value:.1f}%", 
+              ha='center', va='center', 
+              fontsize=14, color=color,
+              path_effects=[patheffects.withStroke(linewidth=3, foreground='#0a0a12')])
+
+    def update_metrics(self):
+        """Actualiza todas las métricas del sistema"""
+        try:
+            # Obtener datos de la computadora 
+            cpu = psutil.cpu_percent()
+            ram = psutil.virtual_memory().percent
+            disk = psutil.disk_usage('/').percent
+        
+            # Actualizar los dats
+            self.cpu_var.set(f"🖥 CPU: {cpu:.1f}%")
+            self.ram_var.set(f"💾 RAM: {ram:.1f}%")
+            self.disk_var.set(f"💿 ALMACENAMIENTO: {disk:.1f}%")
+        
+            # Actualizar los gráficos
+            self.update_resource_graph(self.cpu_ax, cpu, '#00fffc')
+            self.update_resource_graph(self.ram_ax, ram, '#ff00ff')
+            self.cpu_canvas.draw_idle()
+            self.ram_canvas.draw_idle()
+        
+        except Exception as e:
+            print(f"Error en métricas: {str(e)}")
+    
+        self.root.after(1000, self.update_metrics)
     
     def set_neon_theme(self):
         """Configura el tema neon futurista"""
         self.root.configure(bg='#0a0a12')
         
-        # Configurar colores neon
+        # Configurar colores 
         self.neon_blue = '#4db8ff'
         self.neon_pink = '#ff00ff'
         self.neon_purple = '#6a00ff'
@@ -123,6 +218,16 @@ class CustomShellUI:
         # Configurar estilos ttk
         self.style = ttk.Style()
         self.style.theme_use('clam')
+        
+        #Estilos de las graficas
+        self.style.configure('Graph.TFrame', 
+                       background='#12012a',
+                       borderwidth=2,
+                       relief='ridge',
+                       lightcolor=self.neon_purple,
+                       darkcolor='#12012a')
+        
+        
         
         # Frame style
         self.style.configure('Neon.TFrame', background=self.dark_bg)
