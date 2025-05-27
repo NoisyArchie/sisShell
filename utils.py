@@ -13,6 +13,7 @@ import datetime
 import subprocess
 import sys
 import matplotlib.pyplot as plt
+import pygame
 
 def get_current_path():
     return os.getcwd()
@@ -297,3 +298,11 @@ def regresar():
         return(f"Regresado a: {os.getcwd()}")
     except Exception as e:
         return(f"Error al regresar: {e}")
+
+def cumple():
+    try:
+        pygame.mixer.init()
+        pygame.mixer.music.load("secret.wav")
+        pygame.mixer.music.play()
+    except Exception as e:
+        print(f"Error al reproducir el audio: {e}")

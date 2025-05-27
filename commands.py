@@ -7,7 +7,8 @@ faltan: Los comandos extras naturales sin personalizar - Contemplar y garantizar
 no estén en la lista de comandos extendidos personalizados
 (dir, ping, ipconfig, tasklist, calc, notepad, ls etc.)."""
 import subprocess
-from utils import system_info, show_time, show_date, list_files, memdetallada, cpucores, pinglocal, salir, recursos, top5, ayuda, usodisco, usodiscodet, graficadisco, gdd, exportar_salida, mover_dir, regresar #del archivo utils.py vamos agregando las nuevas funciones aki
+import threading
+from utils import system_info, show_time, show_date, list_files, memdetallada, cpucores, pinglocal, salir, recursos, top5, ayuda, usodisco, usodiscodet, graficadisco, gdd, exportar_salida, mover_dir, regresar, cumple #del archivo utils.py vamos agregando las nuevas funciones aki
 
 class Commands:
     def __init__(self, shell):
@@ -32,6 +33,7 @@ class Commands:
             "exportar": self.exportar,
             "mover": self.mover,
             "regresar": self.regresar,
+            "cumple": self.cumpleaños,
             #Aqui hay que agregar más comandos chabales
         }
 
@@ -180,6 +182,18 @@ class Commands:
         self.shell.ui.update_path_label()
         self.shell.ui.text_output.insert("end", result)
 
+    def cumpleaños(self):
+        try:
+            self.shell.ui.text_output.insert("end", "🎉 ¡Feliz cumpleaños! 🎂\n")
+            self.shell.ui.text_output.insert("end", "Reproduciendo sorpresa musical... 🎶\n")
+
+            # Reproducir el audio en segundo plano
+            hilo_audio = threading.Thread(target=cumple)
+            hilo_audio.start()
+
+        except Exception as e:
+            self.shell.ui.text_output.insert("end", f"Error al activar cumpleaños: {e}\n")
+            
 #aqui continuamos con los métodos para los comandos porfo
 
     def execute_external_command(self, command):
