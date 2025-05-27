@@ -8,18 +8,18 @@ from utils import get_current_path
 class CustomShellUI:
     def __init__(self, root):
         self.root = root
-        self.root.title("NeonShell - Terminal Futurista")
+        self.root.title("SisShell")
         self.root.geometry("900x650")
         self.root.minsize(700, 500)
         
         # Configuración del tema neon
         self.set_neon_theme()
         
-        # Objeto shell y comandos (sin cambios)
+        # Objeto shell y comandos
         self.shell = Shell(self)
         self.commands = Commands(self.shell)
         
-        # Barra de ruta con estilo neon
+        # Barra de ruta
         self.path_frame = ttk.Frame(self.root, style='Neon.TFrame')
         self.path_frame.pack(fill=tk.X, padx=10, pady=(10, 0))
         
@@ -34,7 +34,7 @@ class CustomShellUI:
         )
         self.path_label.pack(fill=tk.X, expand=True)
         
-        # Terminal principal con scroll
+        # Terminal principal con su scroll
         self.main_frame = ttk.Frame(self.root, style='Neon.TFrame')
         self.main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
         
@@ -87,7 +87,7 @@ class CustomShellUI:
         )
         self.export_button.pack(side=tk.RIGHT)
 
-        # Botón de ejecución con efecto neon
+        # Botón de ejecución
         self.run_button = ttk.Button(
                 self.input_frame,
                 text="Ejecutar",
@@ -106,7 +106,7 @@ class CustomShellUI:
         self.command_history = []
         self.history_index = -1
         
-        # Mensaje de bienvenida con estilo futurista
+        # Mensaje de bienvenida
         self.display_welcome_message()
     
     def set_neon_theme(self):
@@ -114,7 +114,7 @@ class CustomShellUI:
         self.root.configure(bg='#0a0a12')
         
         # Configurar colores neon
-        self.neon_blue = '#00fffc'
+        self.neon_blue = '#4db8ff'
         self.neon_pink = '#ff00ff'
         self.neon_purple = '#6a00ff'
         self.dark_bg = '#0a0a12'
@@ -167,15 +167,21 @@ class CustomShellUI:
         """Muestra mensaje de bienvenida con estilo futurista"""
         welcome_msg = """
 ╔══════════════════════════════════════════════════════╗
-║  ███╗   ██╗███████╗ ██████╗ ███╗   ██╗███████╗       ║
-║  ████╗  ██║██╔════╝██╔═══██╗████╗  ██║██╔════╝       ║
-║  ██╔██╗ ██║█████╗  ██║   ██║██╔██╗ ██║███████╗       ║
-║  ██║╚██╗██║██╔══╝  ██║   ██║██║╚██╗██║╚════██║       ║
-║  ██║ ╚████║███████╗╚██████╔╝██║ ╚████║███████║       ║
-║  ╚═╝  ╚═══╝╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝       ║
+║                   ⢀⣤⣤⣤⣄⣀⣠⣤⣤⣄⡀                    
+║                 ⣰⠟⠁⠀⠀⠀⠉⠉⠀⠀⠀⠈⠛⢷⡄                 
+║              ⢀⣴⠾⠃⠀⠀⣾⣿⣷⡄⠀⢠⣾⣿⣷⡄⠈⣿⣤⣄⡀              
+║             ⢰⡟⠁⠀⣀⡀⠘⣿⣿⣿⡇⠀⢸⣿⣿⣿⠃⠀⠀⠀⠈⢻⣆             
+║             ⣿⡇⠀⣼⣿⣿⡄⠈⠛⠛⠁⠀⠀⠙⠉⠁⠀⣠⣶⣦⡀⠀⣿            
+║             ⣿⡇⠀⠸⣿⣿⠇⠀⠀⣠⣾⣿⣿⣦⠀⠀⢸⣿⣿⣿⠇⠀⣿             
+║             ⢸⣇⠀⠀⠈⠁⠀⣠⣶⣿⣿⣿⣿⣿⣧⣄⠈⠛⠛⠋⠀⣼⠃             
+║              ⢿⡄⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⣼⡏              
+║               ⠈⣿⡀⠀⠀⠈⠻⠿⠟⠛⠛⠻⠿⠿⠟⠃⠀⢸⣿             
+║                ⣽⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡟               
+║                ⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇               
 ╠══════════════════════════════════════════════════════╣
-║  TERMINAL NEON v1.0 - Escribe 'ayuda' para comenzar  ║
+║       SisShell - Escribe 'ayuda' para más info       ║
 ╚══════════════════════════════════════════════════════╝
+
 """
         self.text_output.insert(tk.END, welcome_msg, 'neon_pink')
         self.text_output.tag_config('neon_pink', foreground=self.neon_pink)

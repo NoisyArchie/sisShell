@@ -193,25 +193,39 @@ def usodiscodet():
         return "".join(resultados)
     
 def graficadisco():
-    if platform.system == "windows":
+    if platform.system().lower() == "windows":
         disco = os.path.splitdrive(os.getcwd())[0] + "\\"
     else:
         disco = "/"
 
+    # Obtener uso del disco
     uso = psutil.disk_usage(disco)
 
     labels = ['Usado', 'Libre']
     values = [uso.used, uso.free]
-    colores = ["#ff4040", "#0ead00"]
+    colores = ["#ff00ff", "#6a00ff"] 
 
-    plt.figure(figsize = (6, 6))
-    plt.pie(values, labels = labels, colors = colores, autopct = '%1.1f%%', startangle = 140)
-    plt.title(f'Uso del Disco.')
-    plt.axis('equal')
+    
+    plt.style.use('dark_background')
+    fig, ax = plt.subplots(figsize=(7, 7), facecolor='#121212')
+    wedges, texts, autotexts = ax.pie(
+        values, labels=labels, colors=colores, autopct='%1.1f%%',
+        startangle=140, textprops=dict(color='white'), wedgeprops=dict(width=0.4)
+    )
+
+    for text in texts:
+        text.set_fontsize(12)
+    for autotext in autotexts:
+        autotext.set_fontsize(13)
+        autotext.set_color('#ffffff')
+
+    ax.set_title('Uso del Disco', fontsize=16, color='white')
+    ax.axis('equal')
+    plt.tight_layout()
     plt.show()
 
 def gdd():
-    particiones = psutil.disk_partitions(all = False)
+    particiones = psutil.disk_partitions(all=False)
     labels = []
     porcentajes = []
     errores = []
@@ -227,10 +241,31 @@ def gdd():
     if not labels:
         raise Exception("No se pudo obtener información de las particiones.")
 
-    plt.figure(figsize=(7, 7))
-    plt.pie(porcentajes, labels = labels, autopct = '%1.1f%%', startangle = 140)
-    plt.title("Uso de Disco por Partición")
-    plt.axis('equal')
+    
+    plt.style.use('dark_background')
+    fig, ax = plt.subplots(figsize=(8, 8), facecolor='#121212')
+
+    
+    colores_neon = ["#991df2", '#ff00ff', '#39ff14', '#fffb00', '#ff6ec7', '#6a00ff']
+
+
+    colores = colores_neon * ((len(labels) // len(colores_neon)) + 1)
+
+    wedges, texts, autotexts = ax.pie(
+        porcentajes, labels=labels, colors=colores[:len(labels)],
+        autopct='%1.1f%%', startangle=140, textprops=dict(color='white'),
+        wedgeprops=dict(width=0.4)
+    )
+
+    for text in texts:
+        text.set_fontsize(11)
+    for autotext in autotexts:
+        autotext.set_fontsize(12)
+        autotext.set_color('white')
+
+    ax.set_title("Uso de Disco por Partición", fontsize=16, color='white')
+    ax.axis('equal')
+    plt.tight_layout()
     plt.show()
 
     return errores
